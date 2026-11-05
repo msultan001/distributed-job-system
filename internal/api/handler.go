@@ -9,10 +9,14 @@ import (
 	"github.com/msultan001/distributed-job-system/internal/job"
 )
 
-type JoBHandler struct{}
+type JoBHandler struct{
+	service *job.JobService
+}
 
-func NewHandler() *JoBHandler {
-	return &JoBHandler{}
+func NewHandler(service *job.JobService) *JoBHandler {
+	return &JoBHandler{
+		service: service,
+	}
 }
 
 func (h *JoBHandler) CreateJobPost(w http.ResponseWriter, r *http.Request) {
@@ -26,7 +30,11 @@ func (h *JoBHandler) CreateJobPost(w http.ResponseWriter, r *http.Request) {
 		Type:    jo.Type,
 		Payload: jo.Payload,
 	}
-	fmt.Println(newJob)
+	if err:=h.service.CreateJob(r.Context(), &newJob); err!=nil{
+		http.Error(w, "could not create a job", http.StatusBadRequest)
+		return
+	}
+	
 	// w.Write([]byte("that was real quick"))
 }
 
