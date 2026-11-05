@@ -16,6 +16,21 @@ func NewConsumer(r *redis.Client) *Consumer {
 	}
 }
 
+
+func (c *Consumer) CreateGroup(ctx context.Context) error {
+    err := c.redis.XGroupCreateMkStream(
+        ctx,
+        "jobs",
+        "job-workers",
+        "0",
+    ).Err()
+
+    if err != nil && err.Error() != "BUSYGROUP Consumer Group name already exists" {
+        return err
+    }
+
+    return nil
+}
 func (c *Consumer) Read(
 	ctx context.Context,
 	consumername string,
@@ -26,9 +41,8 @@ func (c *Consumer) Read(
 			Group:    "job-workers",
 			Consumer: consumername,
 			Streams:  []string{"jobs", ">"},
-
-			Count: 1,
-			Block: 0,
+			Count:    1,
+			Block:    0,
 		},
 	).Result()
 
