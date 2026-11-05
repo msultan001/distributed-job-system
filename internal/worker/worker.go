@@ -20,6 +20,9 @@ func NewWorker(id int, consumer *queue.Consumer) *Worker {
 
 func (w *Worker) Start(ctx context.Context) {
 	for {
-
+		_, err:=w.Consumer.Read(ctx, "")
+		if err!=nil{
+			return
+		}
 	}
 }
