@@ -2,6 +2,7 @@ package queue
 
 import (
 	"context"
+	"encoding/json"
 
 	"github.com/redis/go-redis/v9"
 )
@@ -16,12 +17,17 @@ func NewProducer(r *redis.Client) *Producer {
 	}
 }
 
-func (p *Producer) Publish(ctx context.Context, jobID int, payload string) (string, error) {
+func (p *Producer) Publish(ctx context.Context, jobID int, payload interface{}) (string, error) {
+	data, err:=json.Marshal(payload)
+	if err!=nil{
+		return "", err
+	}
+
 	return p.redisClient.XAdd(ctx, &redis.XAddArgs{
 		Stream: "jobs",
 		Values: map[string]interface{}{
 			"job_id":  jobID,
-			"payload": payload,
+			"payload": string(data),
 		},
 	}).Result()
 
