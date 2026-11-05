@@ -18,8 +18,8 @@ func NewProducer(r *redis.Client) *Producer {
 }
 
 func (p *Producer) Publish(ctx context.Context, jobID int, payload interface{}) (string, error) {
-	data, err:=json.Marshal(payload)
-	if err!=nil{
+	data, err := json.Marshal(payload)
+	if err != nil {
 		return "", err
 	}
 
