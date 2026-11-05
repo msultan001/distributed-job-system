@@ -1,0 +1,15 @@
+# Environment variables
+.env
+.env.*
+
+# Binaries
+*.exe
+*.out
+*.test
+
+# IDE
+.vscode/
+.idea/
+
+# Dependencies
+vendor/
