@@ -6,10 +6,11 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/google/uuid"
 	"github.com/msultan001/distributed-job-system/internal/job"
 )
 
-type JoBHandler struct{
+type JoBHandler struct {
 	service *job.JobService
 }
 
@@ -26,16 +27,14 @@ func (h *JoBHandler) CreateJobPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	newJob := job.Job{
-		ID:      10,
+		ID:      uuid.New(),
 		Type:    jo.Type,
 		Payload: jo.Payload,
 	}
-	if err:=h.service.CreateJob(r.Context(), &newJob); err!=nil{
+	if err := h.service.CreateJob(r.Context(), &newJob); err != nil {
 		http.Error(w, "could not create a job", http.StatusBadRequest)
 		return
 	}
-	
-	// w.Write([]byte("that was real quick"))
 }
 
 func (h *JoBHandler) GetProcessedJob(w http.ResponseWriter, r *http.Request) {
